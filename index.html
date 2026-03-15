@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Tihaaa của Anh ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink-light: #ffebf2;
+            --pink-medium: #ff85a2;
+            --pink-dark: #ff4d6d;
+            --white-glass: rgba(255, 255, 255, 0.8);
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; font-family: 'Quicksand', sans-serif;
+            background: #ffc2d1;
+            background: linear-gradient(135deg, #ffc2d1 0%, #ffe5ec 100%);
+        }
+
+        /* Canvas cho trái tim bay lung linh */
+        canvas {
+            position: absolute; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+
+        .container {
+            position: relative; z-index: 10;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; width: 100%;
+        }
+
+        /* Thẻ thư tình */
+        .card {
+            background: var(--white-glass);
+            backdrop-filter: blur(10px);
+            border: 2px solid white;
+            padding: 50px 30px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(255, 77, 109, 0.3);
+            text-align: center;
+            max-width: 450px; width: 85%;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        #scene2 { display: none; opacity: 0; transform: translateY(50px); }
+
+        h1 { 
+            font-family: 'Pacifico', cursive; 
+            font-size: 3.5rem; 
+            color: var(--pink-dark); 
+            margin: 0 0 20px 0;
+            text-shadow: 3px 3px 0px white;
+        }
+
+        .message {
+            font-size: 1.2rem;
+            color: #444;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        /* Nút nhấn kiểu hiệu ứng sóng */
+        .btn-love {
+            background: var(--pink-dark);
+            color: white; border: none;
+            padding: 18px 35px; border-radius: 50px;
+            font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.4);
+        }
+
+        .btn-love:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: #ff0a54;
+        }
+
+        /* Lời hứa cảnh 2 */
+        .promise-box {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2rem;
+            color: var(--pink-dark);
+            line-height: 1.4;
+        }
+
+        .ring-box {
+            font-size: 4rem;
+            margin-top: 25px;
+            display: block;
+            filter: drop-shadow(0 0 10px gold);
+        }
+
+        /* Trang trí thêm trái tim ở góc */
+        .corner-heart {
+            position: absolute; font-size: 2rem; opacity: 0.5;
+        }
+        .tl { top: 10px; left: 10px; }
+        .tr { top: 10px; right: 10px; }
+        .bl { bottom: 10px; left: 10px; }
+        .br { bottom: 10px; right: 10px; }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="heartCanvas"></canvas>
+
+    <div class="container">
+        <div id="scene1" class="card">
+            <span class="corner-heart tl">💖</span>
+            <span class="corner-heart tr">💝</span>
+            <h1>Tihaaa</h1>
+            <div class="message">
+                Tihaaa à, anh có điều muốn nói với em... <br>
+                Gửi đến người con gái anh yêu nhất muôn vàn trái tim và tình yêu đong đầy.
+            </div>
+            <button class="btn-love" onclick="changeScene()">Nhấn để được anh yêu ❤️</button>
+            <span class="corner-heart bl">💓</span>
+            <span class="corner-heart br">💗</span>
+        </div>
+
+        <div id="scene2" class="card">
+            <h1>Gửi Tihaaa...</h1>
+            <div class="promise-box">
+                Anh hứa sẽ chăm sóc em, <br>
+                luôn quan tâm em, <br>
+                và sẽ cho em mặc chiếc váy cưới đẹp nhất trên lễ đài.
+            </div>
+            <span class="ring-box">💍👰🤵</span>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        let hearts = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Heart {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 200;
+                this.size = Math.random() * 15 + 5;
+                this.speed = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.color = ['#ff4d6d', '#ff758f', '#ff85a2', '#ffb3c1'][Math.floor(Math.random() * 4)];
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                const topY = this.y - this.size;
+                ctx.moveTo(this.x, this.y);
+                ctx.bezierCurveTo(this.x - this.size, this.y - this.size, this.x - this.size, topY - this.size, this.x, topY);
+                ctx.bezierCurveTo(this.x + this.size, topY - this.size, this.x + this.size, this.y - this.size, this.x, this.y);
+                ctx.fill();
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -20) this.reset();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) {
+            hearts.push(new Heart());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(h => {
+                h.update();
+                h.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        function changeScene() {
+            const s1 = document.getElementById('scene1');
+            const s2 = document.getElementById('scene2');
+
+            // Hiệu ứng biến mất cảnh 1
+            s1.style.opacity = '0';
+            s1.style.transform = 'scale(0.5) rotate(10deg)';
+            
+            setTimeout(() => {
+                s1.style.display = 'none';
+                s2.style.display = 'block';
+                // Kích hoạt mưa trái tim mạnh hơn khi chuyển cảnh
+                for(let i=0; i<30; i++) hearts.push(new Heart());
+                
+                setTimeout(() => {
+                    s2.style.opacity = '1';
+                    s2.style.transform = 'translateY(0) scale(1)';
+                }, 100);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
